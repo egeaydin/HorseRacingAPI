@@ -19,4 +19,10 @@ class FixtureView(APIView):
         if not fix:
             fix = cache.get_or_set(cache_key, FixtureScrapper.scrap_by_date(City.Izmir, date))
 
-        return Response(FixtureSerializer(fix[1], many=True).data)
+        return Response(self.fixture_to_race_day(fix))
+
+    def fixture_to_race_day(self, fix):
+        race_day_dict = {}
+        for i, race in enumerate(fix):
+            race_day_dict[i] = FixtureSerializer(race, many=True).data
+        return race_day_dict
