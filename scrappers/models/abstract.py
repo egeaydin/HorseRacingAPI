@@ -11,7 +11,7 @@ class BasePage(models.Model):
 
     __metaclass__ = OrderedClassMembers
     race_id = models.IntegerField(default=0)
-    race_date = models.DateField(blank=True, null=True)
+    race_date = models.DateTimeField(blank=True, null=True)
     horse_id = models.IntegerField()
     jockey_id = models.IntegerField()
     owner_id = models.IntegerField()
