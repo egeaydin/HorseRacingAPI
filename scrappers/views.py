@@ -8,5 +8,11 @@ from datetime import datetime
 
 def fixture(request):
     date = datetime(2017, 11, 17)
-    fix = cache.get_or_set(City.Izmir.value + date.timestamp(), FixtureScrapper.scrap_by_date(City.Izmir, date))
+    cache_key = City.Izmir.value + date.timestamp()
+
+    # see if it is already cached
+    fix = cache.get(cache_key)
+    # if not cached
+    if not fix:
+        fix = cache.get_or_set(cache_key, FixtureScrapper.scrap_by_date(City.Izmir, date))
     return JsonResponse(FixtureSerializer(fix[0][0]).data)
