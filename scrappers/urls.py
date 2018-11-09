@@ -1,7 +1,7 @@
 from django.urls import path
-from .views import fixture
+from .views import FixtureView
 
 
 urlpatterns = [
-    path('fixture', fixture, name='fixture'),
+    path('fixture', FixtureView.as_view(), name='fixture'),
 ]
