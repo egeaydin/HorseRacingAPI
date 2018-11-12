@@ -1,59 +1,16 @@
 # -*- coding: utf-8 -*-
 # The above line is for turkish characters in comments, unless it is there a encoding error is raised in the server
 from .enums import ManagerType, PageType
-from . import logger
-import datetime
+from .models import Result
 
 
-class BaseRowScrapper:
-    test_model = ''
-    page_type = ''
-
-    def __init__(self, html_row):
-        self.row = html_row
-
-    def get(self):
-        model = self.page_type.model()
-
-        # Jockey, owner and trainer's have their id's just like the horse's own id. We are only interested in their
-        # ids so we don't bother to get their names
-        model.jockey_id = self.get_manager_id(ManagerType.Jockey)
-        model.owner_id = self.get_manager_id(ManagerType.Owner)
-        model.trainer_id = self.get_manager_id(ManagerType.Trainer)
-
-        return model
-
-    def get_manager_id(self, _type):
-        """
-        :param _type: The content of the column where the according type of manager is
-        :return: id of the desired manager either Jockey, Owner or Trainer
-        """
-        pass
-
-    @staticmethod
-    def get_id_from_a(a):
-        """"
-        The url's contain the id, after the phrase Id=
-        :param a: The html code of a tag
-        :return: id of the supplied a tag
-        """
-        if a:
-            # We split from that and take the rest
-            id_ = a['href'].split("Id=")[1]
-
-            # We split one more time in case of there is more after the id
-            # We take the first part this time
-            id_ = id_.split("&")[0]
-
-            return id_
-
-
-class BaseRaceDayRowScrapper(BaseRowScrapper):
+class BaseRaceDayRowScrapper:
     """
       Class name used for horses' name in TJK's site, after "gunluk-GunlukYarisProgrami-"
       Ex: <td class="gunluk-GunlukYarisProgrami-AtAdi">
       """
     horse_name_class_name = ''
+    page_type = ''
 
     """
     Beginning of the class name used for each row in the tables, Fixture and Result tables has it differently
@@ -62,8 +19,18 @@ class BaseRaceDayRowScrapper(BaseRowScrapper):
     """
     td_class_base = ''
 
+    def __init__(self, html_row):
+        self.row = html_row
+
     def get(self):
-        model = super(BaseRaceDayRowScrapper, self).get()
+        model = Result()
+
+        # Jockey, owner and trainer's have their id's just like the horse's own id. We are only interested in their
+        # ids so we don't bother to get their names
+        model.jockey_id = self.get_manager_id(ManagerType.Jockey)
+        model.owner_id = self.get_manager_id(ManagerType.Owner)
+        model.trainer_id = self.get_manager_id(ManagerType.Trainer)
+
         # The third column in the table contains the name of the horse and a link that goes to that horse's page.
         # Also the link will have the id of the horse and the abbreviations that come after the name which tells
         # status information, for example whether the horse will run with an eye patch and etc.
@@ -123,6 +90,23 @@ class BaseRaceDayRowScrapper(BaseRowScrapper):
         column = self.get_column(col_name)
         return "".join(column.stripped_strings if column else '-1')
 
+    @staticmethod
+    def get_id_from_a(a):
+        """"
+        The url's contain the id, after the phrase Id=
+        :param a: The html code of a tag
+        :return: id of the supplied a tag
+        """
+        if a:
+            # We split from that and take the rest
+            id_ = a['href'].split("Id=")[1]
+
+            # We split one more time in case of there is more after the id
+            # We take the first part this time
+            id_ = id_.split("&")[0]
+
+            return id_
+
 
 class FixtureRowScrapper(BaseRaceDayRowScrapper):
     """
@@ -177,64 +161,3 @@ class ResultRowScrapper(BaseRaceDayRowScrapper):
         result.handicap = int(self.get_column_content("Hc") or self.get_column_content("Hk"))
         return result
 
-
-class HorseRowScrapper(BaseRowScrapper):
-    page_type = PageType.Horse
-
-    def __init__(self, html_row):
-        super(HorseRowScrapper, self).__init__(html_row)
-        # Most of the columns do not have classes, we get all columns and assign each by hard-coding indexes
-        self.columns = self.row.find_all("td")
-
-    def get(self):
-        model = super(HorseRowScrapper, self).get()
-
-        date_and_race_id = self.columns[0]
-
-        model.race_date = datetime.datetime.strptime(date_and_race_id.text, '\n%d.%m.%Y ')
-
-        try:
-            race_url = date_and_race_id.find('a', href=True)['href']
-            # Race id is after the only hash-tag
-            # Ex: /TR/YarisSever/Info/Page/GunlukYarisSonuclari?QueryParameter_Tarih=04/08/2017#111471
-            # Split by hash-tag and get the second
-            model.race_id = race_url.split('#')[1]
-        except TypeError:
-            # Some results don't have the races linked to them, so we mark it as missing
-            model.race_id = -1
-
-        model.city = str(self.get_column(1))
-        model.distance = self.get_column(2)
-        model.track_type = str(self.get_column(3))
-        model.result = self.get_column(4)
-        model.time = str(self.get_column(5))
-        model.horse_weight = str(self.get_column(6))
-        model.handicap = self.get_column(14)
-
-        return model
-
-    def get_manager_id(self, _type):
-        """
-        :param _type: The content of the column where the according type of manager is
-        :return: id of the desired manager either Jockey, Owner or Trainer
-        """
-        index = 0
-        if _type is ManagerType.Jockey:
-            index = 7
-        elif _type is ManagerType.Trainer:
-            index = 12
-        elif _type is ManagerType.Owner:
-            index = 13
-        else:
-            raise Exception("Manager type not recognized!")
-
-        try:
-            return self.get_id_from_a(self.columns[index].find('a', href=True))
-        except:
-            raise Exception(self.row)
-
-    def get_column(self, index):
-        column = self.columns[index].stripped_strings
-        for col in column:
-            return col
-        return -1

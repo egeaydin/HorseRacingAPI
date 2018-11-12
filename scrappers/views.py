@@ -1,8 +1,6 @@
-from .page import FixtureScrapper
-from .enums import City
-from .serializers import FixtureSerializer
+from .page import FixtureScrapper, ResultScrapper
+from .serializers import ResultSerializer
 from .url_forms import RaceDayURLQueryForm
-from django.core.cache import cache
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -15,18 +13,12 @@ class FixtureView(APIView):
             city = query_params.cleaned_data['city']
             cache_key = city.value + date.timestamp()
 
-            # see if it is already cached
-            fix = cache.get(cache_key)
-            # if not cached
-            if not fix:
-                fix = cache.get_or_set(cache_key, FixtureScrapper.scrap_by_date(city, date))
+            # First we check if result page is available for the race
+            results = FixtureScrapper.scrap_by_date(city, date)
 
-            return Response(self.fixture_to_race_day(fix))
+            race_day_dict = {}
+            for i, race in enumerate(results):
+                race_day_dict[i] = ResultSerializer(race, many=True).data
+            return Response(race_day_dict)
         else:
             return Response(query_params.errors)
-
-    def fixture_to_race_day(self, fix):
-        race_day_dict = {}
-        for i, race in enumerate(fix):
-            race_day_dict[i] = FixtureSerializer(race, many=True).data
-        return race_day_dict

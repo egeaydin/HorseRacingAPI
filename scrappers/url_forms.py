@@ -23,7 +23,7 @@ class RaceDayURLQueryForm(forms.Form):
 
     def clean_city(self):
         """
-        City can be either ID or the actual name of the city we can easily validate it by trying to convert the value
+        City can be either ID or the actual name of the city. We can easily validate it by trying to convert the value
         to enum's value or name. If enum is successfully generated then city is valid.
         :return:
         """

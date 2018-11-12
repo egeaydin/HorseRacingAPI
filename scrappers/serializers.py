@@ -1,10 +1,10 @@
 from rest_framework.serializers import ModelSerializer
-from .models.actual import Fixture
+from .models import Result
 
 
-class FixtureSerializer(ModelSerializer):
+class ResultSerializer(ModelSerializer):
     class Meta:
-        model = Fixture
+        model = Result
         fields = '__all__'
 
 

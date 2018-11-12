@@ -8,7 +8,7 @@ from .exception import PageDoesNotExist
 import time
 
 
-class BasePageScrapper:
+class BaseRaceDayScrapper:
     """
     Race Day Scrapper(RDS) makes a request to an url in order to get the page source that contains information about
     the past, present or upcoming races usually from Turkey.
@@ -31,54 +31,6 @@ class BasePageScrapper:
 
     rows = list()
 
-    def __init__(self, html='', url=''):
-        # Means we have to download the html source our selves
-        if not html:
-            self.set_url()
-
-            # Try many times, occasionally it might fail
-            try_counter = 20
-            while True:
-                try:
-                    # Get the html of the page that contains the results
-                    self.html = urllib.request.urlopen(self.url).read()
-                    break
-                except urllib.request.HTTPError:
-                    if try_counter != 0:
-                        time.sleep(1)
-                        try_counter -= 1
-                        continue
-
-        else:
-            self.html = html
-            self.url = url
-
-        self.is_valid_page()
-
-    def set_url(self):
-        pass
-
-    def get_race_divs(self):
-        pass
-
-    @classmethod
-    def from_date_values(cls, city, year, month, day):
-        return cls(city, datetime.date(year, month, day))
-
-    @classmethod
-    def from_test_data_model(cls, model):
-        return cls(City(model.city_id), model.date, model.html_source, model.url)
-
-    def get(self):
-        pass
-
-    def is_valid_page(self):
-        if len(self.html) is 0:
-            raise PageDoesNotExist('Could not find the race! Please make sure race is available on TJK.org. Url: {'
-                                   '0}'.format(self.url))
-
-
-class BaseRaceDayScrapper(BasePageScrapper):
     """
         Fixture and Result has one particular difference in the url, thus this property determines that
         Fixture: 'GunlukYarisProgrami'
@@ -92,9 +44,33 @@ class BaseRaceDayScrapper(BasePageScrapper):
         self.city = city
         self.date = date
 
-        super(BaseRaceDayScrapper, self).__init__(html, url)
+        self.set_url()
+
+        # Try many times, occasionally it might fail
+        try_counter = 20
+        while True:
+            try:
+                # Get the html of the page that contains the results
+                self.html = urllib.request.urlopen(self.url).read()
+                break
+            except urllib.request.HTTPError:
+                if try_counter != 0:
+                    time.sleep(1)
+                    try_counter -= 1
+                    continue
+
+        self.is_valid_page()
 
         self.race_divs = self.get_race_divs()
+
+    @classmethod
+    def from_date_values(cls, city, year, month, day):
+        return cls(city, datetime.date(year, month, day))
+
+    def is_valid_page(self):
+        if len(self.html) is 0:
+            raise PageDoesNotExist('Could not find the race! Please make sure race is available on TJK.org. Url: {'
+                                   '0}'.format(self.url))
 
     def set_url(self):
         # -- start url parsing --
