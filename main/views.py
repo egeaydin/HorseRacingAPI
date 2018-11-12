@@ -1,4 +1,4 @@
-from .page import FixtureScrapper, ResultScrapper
+from main.scrappers.page import FixtureScrapper, ResultScrapper
 from .serializers import ResultSerializer
 from .url_forms import RaceDayURLQueryForm
 from rest_framework.response import Response

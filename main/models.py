@@ -1,5 +1,5 @@
 from django.db import models
-from .util.collections import OrderedClassMembers
+from main.util.collections import OrderedClassMembers
 from .exception import MissingData
 
 

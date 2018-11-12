@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # The above line is for turkish characters in comments, unless it is there a encoding error is raised in the server
-from .enums import ManagerType, PageType
-from .models import Result
+from main.enums import ManagerType, PageType
+from main.models import Result
 
 
 class BaseRaceDayRowScrapper:

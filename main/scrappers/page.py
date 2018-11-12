@@ -2,7 +2,7 @@
 # The above line is for turkish characters in comments, unless it is there a encoding error is raised in the server
 
 from .row import FixtureRowScrapper, ResultRowScrapper
-from .enums import PageType
+from main.enums import PageType
 from .abstract import BaseRaceDayScrapper
 
 
