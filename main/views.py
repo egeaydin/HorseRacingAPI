@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 
-class FixtureView(APIView):
+class RaceDayView(APIView):
     def get(self, request, format=None):
         query_params = RaceDayURLQueryForm(self.request.query_params)
         if query_params.is_valid():
