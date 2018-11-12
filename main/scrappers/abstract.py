@@ -45,31 +45,17 @@ class BaseRaceDayScrapper:
 
         self.set_url()
 
-        # Try many times, occasionally it might fail
-        try_counter = 20
-        while True:
-            try:
-                # Get the html of the page that contains the results
-                self.html = urllib.request.urlopen(self.url).read()
-                break
-            except urllib.request.HTTPError:
-                if try_counter != 0:
-                    time.sleep(1)
-                    try_counter -= 1
-                    continue
-
-        self.is_valid_page()
+        try:
+            # Get the html of the page that contains the results
+            self.html = urllib.request.urlopen(self.url).read()
+        except urllib.request.HTTPError as http_error:
+            raise PageDoesNotExist('{0}, error: {1}'.format(self.url, http_error))
 
         self.race_divs = self.get_race_divs()
 
     @classmethod
     def from_date_values(cls, city, year, month, day):
         return cls(city, datetime.date(year, month, day))
-
-    def is_valid_page(self):
-        if len(self.html) is 0:
-            raise PageDoesNotExist('Could not find the race! Please make sure race is available on TJK.org. Url: {'
-                                   '0}'.format(self.url))
 
     def set_url(self):
         # -- start url parsing --
@@ -99,10 +85,9 @@ class BaseRaceDayScrapper:
 
         # Get the div containing all the races
         race_div = soup.find("div", class_='races-panes')
-
         # Check if the page is valid
         if not race_div:
-            pass
+            raise PageDoesNotExist(self.url)
 
         # Getting the one level inner divs which contains each race. Recursive is set to false because we don't want
         # to go the the inner child of those divs. Just trying to stay on the first level
