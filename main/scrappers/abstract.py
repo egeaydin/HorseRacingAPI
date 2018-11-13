@@ -49,7 +49,7 @@ class BaseRaceDayScrapper:
             # Get the html of the page that contains the results
             self.html = urllib.request.urlopen(self.url).read()
         except urllib.request.HTTPError as http_error:
-            raise PageDoesNotExist(http_error, self.url)
+            raise PageDoesNotExist(str(http_error), self.url)
 
         self.race_divs = self.get_race_divs()
 

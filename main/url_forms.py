@@ -12,7 +12,7 @@ class RaceDayURLQueryForm(forms.Form):
     year = forms.IntegerField(max_value=9999, min_value=1000, required=True)
     month = forms.IntegerField(max_value=12, min_value=1, required=True)
     day = forms.IntegerField(max_value=31, min_value=1, required=True)
-    city = forms.CharField(max_length=20, required=False)
+    city = forms.CharField(max_length=20, required=True)
 
     @property
     def race_date(self):
@@ -27,9 +27,9 @@ class RaceDayURLQueryForm(forms.Form):
         to enum's value or name. If enum is successfully generated then city is valid.
         :return:
         """
-        city = self.cleaned_data['city']
 
-        if city:
+        if self.is_valid():
+            city = self.cleaned_data['city']
             # first check if incoming parameter is id
             try:
                 city = City(int(city))
@@ -43,3 +43,4 @@ class RaceDayURLQueryForm(forms.Form):
                     raise ValidationError("Invalid value for City, City should be either valid city id or key",
                                           code='invalid')
             return city
+
