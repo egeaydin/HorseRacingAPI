@@ -23,7 +23,7 @@ class RaceDayView(APIView):
                     results = FixtureScrapper.scrap_by_date(city, date)
                 except PageDoesNotExist as page_does_not_exist:
                     # No fixture found either, that means no races happening in that city for the date
-                    return Response({'Error': str(page_does_not_exist)})
+                    return Response(page_does_not_exist.full_details)
 
             race_day_dict = {}
             for i, race in enumerate(results):

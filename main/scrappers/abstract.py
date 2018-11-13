@@ -49,7 +49,7 @@ class BaseRaceDayScrapper:
             # Get the html of the page that contains the results
             self.html = urllib.request.urlopen(self.url).read()
         except urllib.request.HTTPError as http_error:
-            raise PageDoesNotExist('{0}, error: {1}'.format(self.url, http_error))
+            raise PageDoesNotExist(http_error, self.url)
 
         self.race_divs = self.get_race_divs()
 
@@ -87,7 +87,7 @@ class BaseRaceDayScrapper:
         race_div = soup.find("div", class_='races-panes')
         # Check if the page is valid
         if not race_div:
-            raise PageDoesNotExist(self.url)
+            raise PageDoesNotExist('', self.url)
 
         # Getting the one level inner divs which contains each race. Recursive is set to false because we don't want
         # to go the the inner child of those divs. Just trying to stay on the first level
