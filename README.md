@@ -32,10 +32,10 @@ Returns json data containing the information about the races run in the given ci
 
    **Required:**
  
-   `year=[integer]`: The year of the desired race day
-   `month=[integer]`: The month of the desired race day 
-   `day=[integer]`: The day of the desired race day
-   `city=[integer or string]`: City id or name for the desired city. Please refer to the table below:  
+   `year=[integer]`: The year of the desired race day  
+   `month=[integer]`: The month of the desired race day   
+   `day=[integer]`: The day of the desired race day   
+   `city=[integer or string]`: City id or name for the desired city. Please refer to the table below:   
     
     | Name       | ID  |
     | ---------- |:---:|
