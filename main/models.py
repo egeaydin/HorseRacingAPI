@@ -4,11 +4,14 @@ from .exception import MissingData
 
 
 class Result(models.Model):
+    class Meta:
+        managed = False
+        unique_together = ('race_id', 'horse_id')
     __metaclass__ = OrderedClassMembers
 
-    race_id = models.IntegerField(default=0)
+    race_id = models.IntegerField(default=0, primary_key=True)
     race_date = models.DateTimeField(blank=True, null=True)
-    horse_id = models.IntegerField()
+    horse_id = models.IntegerField(unique=True)
     jockey_id = models.IntegerField()
     owner_id = models.IntegerField()
     trainer_id = models.IntegerField()
