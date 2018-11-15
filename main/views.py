@@ -1,5 +1,4 @@
 from main.scrappers.page import FixtureScrapper, ResultScrapper
-from .serializers import ResultSerializer
 from .url_forms import RaceDayURLQueryForm
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -25,9 +24,6 @@ class RaceDayView(APIView):
                     # No fixture found either, that means no races happening in that city for the date
                     return Response(page_does_not_exist.full_details)
 
-            race_day_dict = {}
-            for i, race in enumerate(results):
-                race_day_dict[i] = ResultSerializer(race, many=True).data
-            return Response(race_day_dict)
+            return Response(results.serialize())
         else:
             return Response(query_params.errors)

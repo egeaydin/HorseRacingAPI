@@ -6,6 +6,7 @@ from main.exception import PageDoesNotExist
 import time
 from main.enums import ManagerType
 from main.models import Result
+from ..serializers import ResultSerializer
 
 
 class BaseRaceDayScrapper:
@@ -43,8 +44,10 @@ class BaseRaceDayScrapper:
         self.city = city
         self.date = date
 
-        self.set_url()
+        # Create an empty list to hold each race
+        self.races = []
 
+        self.set_url()
         try:
             # Get the html of the page that contains the results
             self.html = urllib.request.urlopen(self.url).read()
@@ -82,7 +85,6 @@ class BaseRaceDayScrapper:
     def get_race_divs(self):
         # Get the Soap object for easy scraping
         soup = BeautifulSoup(self.html, "lxml")
-
         # Get the div containing all the races
         race_div = soup.find("div", class_='races-panes')
         # Check if the page is valid
@@ -93,9 +95,7 @@ class BaseRaceDayScrapper:
         # to go the the inner child of those divs. Just trying to stay on the first level
         return race_div.find_all("div", recursive=False)
 
-    def get(self):
-        # Create an empty list to hold each race
-        races = []
+    def process(self):
         # Process each race
         logger.info('Processing each race')
 
@@ -149,12 +149,17 @@ class BaseRaceDayScrapper:
                 # Append the model to the result list
                 results.append(model)
             # This point we have all the results of one race we can append it to the race list
-            races.append(results)
+            self.races.append(results)
 
             self.rows.append(rows)
         # We got all the information about the race day in the given city and date. We can return the races list now
         logger.info('Completed!')
-        return races
+
+    def serialize(self):
+        race_day_dict = {}
+        for i, race in enumerate(self.races):
+            race_day_dict[i] = ResultSerializer(race, many=True).data
+        return race_day_dict
 
     @classmethod
     def scrap_by_date(cls, city, date):
@@ -165,7 +170,8 @@ class BaseRaceDayScrapper:
         :return: Returns the results of the desired race
         """
         scrapper = cls(city, date)
-        return scrapper.get()
+        scrapper.process()
+        return scrapper
 
     @classmethod
     def scrap(cls, city, year, month, day):
