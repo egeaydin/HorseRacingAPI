@@ -3,6 +3,7 @@ from .url_forms import RaceDayURLQueryForm
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .exception import PageDoesNotExist
+from django.http import JsonResponse
 
 
 class RaceDayView(APIView):
@@ -27,3 +28,10 @@ class RaceDayView(APIView):
             return Response(results.serialize())
         else:
             return Response(query_params.errors)
+
+
+def handler404(request, *args, **argv):
+    return JsonResponse(
+        {'Error': 'Requested url not found, please look at the tutorial: https://github.com/egeaydin/HorseRacingAPI#api-call',
+         'status_code': 404})
+

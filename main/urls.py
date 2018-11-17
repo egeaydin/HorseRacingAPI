@@ -19,3 +19,5 @@ from .views import RaceDayView
 urlpatterns = [
     path('race_day', RaceDayView.as_view(), name='race_day'),
 ]
+
+handler404 = 'main.views.handler404'

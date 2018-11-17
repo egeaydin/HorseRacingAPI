@@ -23,9 +23,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'upe12ib2g_#vm^j5zttup$@)r1y*932&uc+kb3#$^w3^^7h-qc'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['horseracingapi.herokuapp.com', 'horseracingapi.egeaydin.net']
 
 
 # Application definition

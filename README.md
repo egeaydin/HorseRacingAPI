@@ -37,6 +37,7 @@ Returns json data containing the information about the races run in the given ci
    `day=[integer]`: The day of the desired race day   
    `city=[integer or string]`: City id or name for the desired city. Please refer to the table below:   
     
+    ##### City Table
     | Name       | ID  |
     | ---------- |:---:|
     | Adana      | 1   |

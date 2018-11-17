@@ -3,16 +3,21 @@ from datetime import datetime
 from .enums import City
 from django.core.exceptions import ValidationError
 
+default_errors = {
+    'required': 'This field is required. Please look at the tutorial: https://github.com/egeaydin/HorseRacingAPI#api-call',
+}
+
 
 class RaceDayURLQueryForm(forms.Form):
     """
     Django forms are great way to validate the given parameters to the URL.
     The purpose of this class is to validate the url for getting race day data
     """
-    year = forms.IntegerField(max_value=9999, min_value=1000, required=True)
-    month = forms.IntegerField(max_value=12, min_value=1, required=True)
-    day = forms.IntegerField(max_value=31, min_value=1, required=True)
-    city = forms.CharField(max_length=20, required=True)
+    year = forms.IntegerField(max_value=9999, min_value=1000, required=True, error_messages=default_errors)
+    month = forms.IntegerField(max_value=12, min_value=1, required=True, error_messages=default_errors)
+    day = forms.IntegerField(max_value=31, min_value=1, required=True, error_messages=default_errors)
+    city = forms.CharField(max_length=20, required=True, error_messages=default_errors)
+
 
     @property
     def race_date(self):
@@ -40,7 +45,8 @@ class RaceDayURLQueryForm(forms.Form):
                     city = City[city]
                 except KeyError:
                     # it is neither a valid id or a key, so we raise an error
-                    raise ValidationError("Invalid value for City, City should be either valid city id or key",
+                    raise ValidationError("Invalid value for City, City should be either valid city id or key. "
+                                          "Plase check the table: https://github.com/egeaydin/HorseRacingAPI#city-table",
                                           code='invalid')
             return city
 
