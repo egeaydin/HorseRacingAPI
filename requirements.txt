@@ -1,3 +1,5 @@
 django
 django-rest-framework
 beautifulsoup4
+gunicorn
+django_heroku
