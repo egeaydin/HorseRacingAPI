@@ -46,7 +46,7 @@ class RaceDayURLQueryForm(forms.Form):
                 except KeyError:
                     # it is neither a valid id or a key, so we raise an error
                     raise ValidationError("Invalid value for City, City should be either valid city id or key. "
-                                          "Plase check the table: https://github.com/egeaydin/HorseRacingAPI#city-table",
+                                          "Plase check the table: https://github.com/egeaydin/HorseRacingAPI/tree/heroku#city-table",
                                           code='invalid')
             return city
 
