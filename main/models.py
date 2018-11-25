@@ -1,15 +1,12 @@
 from django.db import models
-from main.util.collections import OrderedClassMembers
 from .exception import MissingData
 
 
 class Result(models.Model):
     class Meta:
-        managed = False
-        unique_together = ('race_id', 'horse_id')
-    __metaclass__ = OrderedClassMembers
+        managed = True
 
-    race_id = models.IntegerField(default=0, primary_key=True)
+    race_id = models.IntegerField(default=0)
     race_date = models.DateTimeField(blank=True, null=True)
     horse_id = models.IntegerField(unique=True)
     jockey_id = models.IntegerField()
