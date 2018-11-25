@@ -1,2 +1,2 @@
 web: gunicorn main.wsgi --log-file -
-worker: celery worker -l info
+celeryd: celery -A gatherer worker -E -B --loglevel=INFO
