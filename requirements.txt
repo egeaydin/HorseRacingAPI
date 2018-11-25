@@ -9,3 +9,4 @@ django-celery-beat
 django-celery-results
 python-decouple
 psycopg2-binary
+whitenoise
