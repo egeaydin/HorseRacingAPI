@@ -4,3 +4,7 @@ beautifulsoup4
 gunicorn
 django_heroku
 lxml
+celery
+django-celery-beat
+django-celery-results
+python-decouple
