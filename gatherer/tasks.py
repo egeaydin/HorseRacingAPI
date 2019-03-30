@@ -2,7 +2,14 @@ import json
 import requests
 from main.models import Result
 from .celery import app
+from celery.schedules import crontab
 
+'''
+@app.on_after_configure.connect
+def setup_periodic_tasks(sender, **kwargs):
+    # Calls test('hello') every 10 seconds.
+    sender.add_periodic_task(10.0, debug_task.s(), name='add every 10')
+'''
 
 @app.task(bind=True)
 def debug_task(request):
