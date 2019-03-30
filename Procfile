@@ -1,2 +1,2 @@
 web: gunicorn main.wsgi --log-file -
-celeryd: celery -A gatherer worker -E -B --loglevel=INFO --app==horceracingapi
+celeryd: celery -A gatherer worker -l info
