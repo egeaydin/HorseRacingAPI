@@ -24,7 +24,7 @@ def setup_periodic_tasks(sender, **kwargs):
         debug_task.r(url_base.format(city.name))
 
 # Load task modules from all registered Django app configs.
-#app.autodiscover_tasks()
+app.autodiscover_tasks()
 
 
 

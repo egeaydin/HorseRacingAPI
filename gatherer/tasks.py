@@ -1,13 +1,9 @@
 import json
 import requests
 from main.models import Result
-from .celery import app
-from celery.schedules import crontab
-from main.enums import City
 import time
 
 
-@app.task(bind=True)
 def debug_task(url):
     connect_timeout, read_timeout = 120, 120
     data = requests.get(url, timeout=(connect_timeout, read_timeout))
