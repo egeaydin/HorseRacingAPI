@@ -4,6 +4,7 @@ from main.models import Result
 from .celery import app
 from celery.schedules import crontab
 from main.enums import City
+import time
 
 
 @app.task(bind=True)
@@ -23,3 +24,5 @@ def gather(request):
                     print('Race saved successfully')
         else:
             print('race did not exist')
+
+        time.sleep(60)
