@@ -19,10 +19,9 @@ app.config_from_object('django.conf:settings', namespace='CELERY')
 
 @app.on_after_configure.connect
 def setup_periodic_tasks(sender, **kwargs):
-    sender.add_periodic_task(
-        crontab(hour=7, minute=30, day_of_week=1, day_of_month=1),
-        debug_task.s(),
-    )
+    url_base = 'https://horseracingapi.herokuapp.com/race_day?year=2018&month=11&day=13&city={0}'
+    for city in City:
+        debug_task.r(url_base.format(city.name))
 
 # Load task modules from all registered Django app configs.
 #app.autodiscover_tasks()

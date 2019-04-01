@@ -8,22 +8,18 @@ import time
 
 
 @app.task(bind=True)
-def debug_task(request):
+def debug_task(url):
     connect_timeout, read_timeout = 120, 120
-    url_base = 'https://horseracingapi.herokuapp.com/race_day?year=2018&month=11&day=13&city={0}'
-    for city in City:
-        url = url_base.format(city.name)
-        print(url)
-        data = requests.get(url, timeout=(connect_timeout, read_timeout))
+    data = requests.get(url, timeout=(connect_timeout, read_timeout))
 
-        if data.status_code == 200:
-            data = json.loads(data.content.decode('utf-8'))
-            for race in data.values():
-                for result in race:
-                    res = Result(**result)
-                    res.save()
-                    print('Race saved successfully')
-        else:
-            print('race did not exist')
+    if data.status_code == 200:
+        data = json.loads(data.content.decode('utf-8'))
+        for race in data.values():
+            for result in race:
+                res = Result(**result)
+                res.save()
+                print('Race saved successfully')
+    else:
+        print('race did not exist')
 
-        time.sleep(60)
+    time.sleep(60)
