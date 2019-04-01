@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from .exception import PageDoesNotExist
 from django.http import JsonResponse
+from rest_framework import status
 
 
 class RaceDayView(APIView):
@@ -23,7 +24,7 @@ class RaceDayView(APIView):
                     results = FixtureScrapper.scrap_by_date(city, date)
                 except PageDoesNotExist as page_does_not_exist:
                     # No fixture found either, that means no races happening in that city for the date
-                    return Response(page_does_not_exist.full_details)
+                    return Response(page_does_not_exist.full_details, status=status.HTTP_404_NOT_FOUND)
 
             return Response(results.serialize())
         else:

@@ -19,7 +19,7 @@ app.autodiscover_tasks()
 app.conf.beat_schedule = {
     'add-every-10-seconds': {
         'task': 'gatherer.tasks.debug_task',
-        'schedule': 10.0,
+        'schedule': 30.0,
         'args': None
     },
 }

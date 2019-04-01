@@ -12,10 +12,12 @@ def setup_periodic_tasks(sender, **kwargs):
 '''
 
 @app.task(bind=True)
-def debug_task(request):
-    url = 'https://horseracingapi.herokuapp.com/race_day?year=2018&month=11&day=13&city=Adana'
+def gather(request):
+    url = 'https://horseracingapi.herokuapp.com/race_day?year=2018&month=11&day=13&city=Izmir'
     data = requests.get(url)
+    print(data.headers)
     data = json.loads(data.content.decode('utf-8'))
+    print(data.values())
 
     for race in data.values():
         for result in race:
