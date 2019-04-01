@@ -17,8 +17,8 @@ app.config_from_object('django.conf:settings', namespace='CELERY')
 app.autodiscover_tasks()
 
 app.conf.beat_schedule = {
-    'add-every-10-seconds': {
-        'task': 'gatherer.tasks.debug_task',
+    'gather': {
+        'task': 'gatherer.tasks.gather',
         'schedule': 30.0,
         'args': None
     },
